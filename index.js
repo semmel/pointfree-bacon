@@ -358,42 +358,8 @@ const
 	push = curry((valueOrBaconError, bus) => {
 		bus.push(valueOrBaconError);
 		return bus;
-	}),
+	});
 	
-	PFB = {
-		combine,
-		combineWith,
-		chain: flatMap,
-		createError: createError,
-		debounceAll,
-		doAnyway: fn => pipe(doAction(fn), doError(fn)),
-		doAction: doAction,
-		doError: doError,
-		doLog,
-		eagerUntil: curry(eagerUntil),
-		endOnError,
-		filter,
-		first,
-		flatMap: flatMap,
-		flatMapConcat: flatMapConcat,
-		flatMapFirst,
-		flatMapLatest,
-		flatMapLatestMaybe,
-		flatMapP: flatMapP,
-		map: map_o,
-		mapEnd,
-		mapError,
-		merge,
-		regeneratorEndSymbol,
-		regenerateReplugBus,
-		reject,
-		skipDuplicates,
-		startWith,
-		takeWhile
-	};
-
-export default PFB;
-
 export let chain = flatMap;
 export let chainRej = flatMapError;
 export let of = now;

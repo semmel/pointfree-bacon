@@ -11,8 +11,15 @@
 	"devDependencies": {
 		"chai": "^4.2.0"
 	},
+	"exports": {
+		".": {
+			"require": "./dist/cjs/pointfree-bacon.js",
+			"default": "./index.js"
+		}
+	},
 	"files": [
-		"index.js"
+		"index.js",
+		"dist"
 	],
 	"homepage": "https://github.com/semmel/pointfree-bacon#readme",
 	"license": "JSON",
@@ -24,7 +31,8 @@
 		"url": "git+https://github.com/semmel/pointfree-bacon.git"
 	},
 	"scripts": {
-		"prepack": "npm run test",
+		"build": "rollup -c",
+		"prepack": "npm run test && npm run build",
 		"test": "mocha"
 	},
 	"type": "module",
