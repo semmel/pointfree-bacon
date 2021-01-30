@@ -1,0 +1,23 @@
+{
+  "name": "@visisoft/pointfree-bacon",
+  "version": "0.0.1",
+  "description": "collection of pointfree, auto-curried, observable-last wrapper functions for Bacon.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/semmel/pointfree-bacon.git"
+  },
+  "author": "Matthias Seemann",
+  "license": "JSON",
+  "bugs": {
+    "url": "https://github.com/semmel/pointfree-bacon/issues"
+  },
+  "homepage": "https://github.com/semmel/pointfree-bacon#readme",
+  "dependencies": {
+    "@visisoft/staticland": "^0.1.13",
+    "baconjs": "^3.0.17"
+  }
+}
