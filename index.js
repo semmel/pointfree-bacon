@@ -122,6 +122,9 @@ const
 	 */
 	// concat :: Observable b -> Observable a -> Observable (a|b)
 	concat = curry((precedingObservable, nextObservable) => precedingObservable.concat(nextObservable)),
+	/**
+	 * Rather use flip(concat)
+	 */
 	// append :: Observable b -> Observable a -> Observable (a|b)
 	append = curry((nextObservable, precedingObservable) => precedingObservable.concat(nextObservable)),
 	
