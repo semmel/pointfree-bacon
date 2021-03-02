@@ -65,7 +65,7 @@
  */
 
 import { and as Rand, binary, construct, complement, compose, curry, curryN, equals, F, flip,
-	identity, identical, o, or as Ror, pair, partialRight, pipe, T, unapply, unary
+	identity, identical, o, or as Ror, pair, partialRight, pipe, T, tap as Rtap, tryCatch, unapply, unary
 } from 'semmel-ramda';
 import * as Bacon from 'baconjs';
 import {chain as chain_mb, isJust, maybe, map as map_mb, nothing, of as of_mb} from '@visisoft/staticland/maybe';
@@ -279,7 +279,7 @@ const
 	sampledBy = curry((sampler, samplee) => samplee.sampledBy(sampler)),
 	// sampledWithBy :: ((a, b) -> c) -> Observable a -> Observable b -> Observable c
 	sampledWithBy = curry((combinatorFn, sampler, samplee) => samplee.sampledBy(sampler, flip(combinatorFn))),
-	// samples :: Property a -> EventStream b -> EventStream a
+	// samples :: Observable a -> EventStream b -> EventStream a
 	samples = curry((samplee, sampler) => sampler.withLatestFrom(samplee, (unused, observableValue) => observableValue)),
 	nothingSeedValue = Symbol('nothingSeedValue'),
 	/**
@@ -336,6 +336,10 @@ const
 	skipIdentical = observable => observable.skipDuplicates(),
 	slidingWindow = curry((maximumNumberOfValues, minimumNumberOfValues, observable) => observable.slidingWindow(maximumNumberOfValues, minimumNumberOfValues)),
 	startWith = curry((seed, observable) => observable.startWith(seed)),
+	// Mimics @most/core tap
+	// tap :: (a -> *) -> Stream a -> Stream a
+	tap = curry((f, observable) => observable.flatMap(tryCatch(o(now, Rtap(f)), e => new Bacon.Error(e)))),
+	take = curry((count, observable) => observable.take(count)),
 	takeUntil = curry((stopper, observable) => observable.takeUntil(stopper)),
 	takeWhile = curry((predicateOrProperty, observable) => observable.takeWhile(predicateOrProperty)),
 	throttle = curry((minimumEmissionInterval, observable) => observable.throttle(minimumEmissionInterval)),
@@ -369,7 +373,6 @@ export let of = now;
 export let map = map_o;
 export let prepend = concat;
 export let skipEquals = skipRamdaLikeEquals;
-export let tap = doAction;
 
 export {
 	and,
@@ -442,8 +445,10 @@ export {
 	slidingWindow,
 	startWith,
 	swap,
+	take,
 	takeUntil,
 	takeWhile,
+	tap,
 	throttle,
 	toEventStream,
 	toProperty,

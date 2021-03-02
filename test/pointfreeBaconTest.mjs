@@ -2,7 +2,7 @@ import { always, append, equals, flip, identity, o, pipe} from 'semmel-ramda';
 import chai from 'chai';
 import * as Bacon from
 		'baconjs';
-import { filterJust, firstToPromise, flatMap, flatScanLatest, lastToPromise, mapEnd, fold as reduce_o } from
+import { filterJust, firstToPromise, flatMap, flatScanLatest, lastToPromise, mapEnd, fold as reduce_o, tap as tap_o } from
 		'../index.js';
 import { nothing, of } from
 		'@visisoft/staticland/maybe';
@@ -60,4 +60,32 @@ describe("Pointfree Maybe Streams", function () {
 			)([of(0), of(1), nothing(), of(3)])
 		);
 	});
+});
+
+describe("tap", function() {
+	it ("execute the side effect and forwards the event values", () => {
+		let valueSum = 0;
+		return pipe(
+			() => Bacon.fromArray([1, 2]),
+			tap_o(x => valueSum += x),
+			reduce_o(flip(append), []),
+			lastToPromise
+		)()
+		.then(acc => {
+			assert.deepStrictEqual(acc, [1, 2]);
+			assert.strictEqual(valueSum, 3);
+		});
+	});
+	
+	it("continues with the error thrown in the side-effect", () =>
+		pipe(
+			() => Bacon.once("foo"),
+			tap_o(() => { throw {message: "bar"}; }),
+			lastToPromise,
+		)()
+		.then(
+			x => { assert.fail(`Should not succeed with ${x}`); },
+			e => { assert.deepStrictEqual(e, {message: "bar"}); }
+		)
+	);
 });
