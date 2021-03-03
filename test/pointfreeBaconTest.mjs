@@ -2,7 +2,17 @@ import { always, append, equals, flip, identity, o, pipe} from 'semmel-ramda';
 import chai from 'chai';
 import * as Bacon from
 		'baconjs';
-import { filterJust, firstToPromise, flatMap, flatScanLatest, lastToPromise, mapEnd, fold as reduce_o, tap as tap_o } from
+import {
+	filterJust,
+	firstToPromise,
+	flatMap,
+	flatScanLatest,
+	lastToPromise,
+	mapEnd,
+	fold as reduce_o,
+	tap as tap_o,
+	chainTap
+} from
 		'../index.js';
 import { nothing, of } from
 		'@visisoft/staticland/maybe';
@@ -86,6 +96,39 @@ describe("tap", function() {
 		.then(
 			x => { assert.fail(`Should not succeed with ${x}`); },
 			e => { assert.deepStrictEqual(e, {message: "bar"}); }
+		)
+	);
+});
+
+describe("chainTap", function() {
+	it ("waits for the last event in the side effect stream and then continues with the source value", () => {
+		let isSideEffectCalled = false;
+		const beginT = Date.now();
+		
+		return chainTap(
+			s => {
+				isSideEffectCalled = true;
+				return Bacon.once(`${s}-bar`).concat(Bacon.later(300, "baz"));
+			},
+			Bacon.once("foo")
+		)
+		.toPromise()
+		.then(x => {
+			assert.strictEqual(x, "foo");
+			assert.isTrue(isSideEffectCalled);
+			assert.approximately(Date.now() - beginT, 300, 50);
+		});
+	});
+	
+	it ("propagates the first error in the side-effect stream", () =>
+		chainTap(
+			x => Bacon.fromArray([x, new Bacon.Error("e-foo"), new Bacon.Error("e-bar")]),
+			Bacon.once("bar")
+		)
+		.toPromise()
+		.then(
+			x => { assert.fail(`must not succeed with ${x}`); },
+			e => { assert.strictEqual(e, "e-foo"); }
 		)
 	);
 });

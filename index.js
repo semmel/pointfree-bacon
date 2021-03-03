@@ -339,6 +339,18 @@ const
 	// Mimics @most/core tap
 	// tap :: (a -> *) -> Stream a -> Stream a
 	tap = curry((f, observable) => observable.flatMap(tryCatch(o(now, Rtap(f)), e => new Bacon.Error(e)))),
+	// chainTap :: :: (a -> Stream g *) -> Stream e a -> Stream (e|g) a
+	chainTap = curry((f, observable) => observable.flatMap(x => {
+		try {
+			return f(x)
+			.mapEnd(x)
+			.endOnError()
+			.last();
+		}
+		catch (e) {
+			return new Bacon.Error(e);
+		}
+	})),
 	take = curry((count, observable) => observable.take(count)),
 	takeUntil = curry((stopper, observable) => observable.takeUntil(stopper)),
 	takeWhile = curry((predicateOrProperty, observable) => observable.takeWhile(predicateOrProperty)),
@@ -378,6 +390,7 @@ export {
 	and,
 	append,
 	bufferWithCount,
+	chainTap,
 	coalesce,
 	concat,
 	changes,
