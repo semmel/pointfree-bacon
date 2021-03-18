@@ -184,7 +184,12 @@ const
 	// merge :: Observable a -> Observable b -> Observable (a|b)
 	merge = curry((takenInObservable, observable) => Bacon.mergeAll(observable, takenInObservable)),
 	not = observable => observable.not(),
-	filter = curry((predicateOrProperty, observable) => observable.filter(predicateOrProperty)),
+	filter = curry((predicateOrProperty, observable) => {
+		if (predicateOrProperty instanceof Bacon.EventStream) {
+			return observable.filter(predicateOrProperty.toProperty());
+		}
+		return observable.filter(predicateOrProperty);
+	}),
 	// flatMap :: (a -> Observable b) -> Observable a -> Observable b
 	flatMap = curry((fn, observable) => observable.flatMap(fn)),
 	// filterJust :: Observable Maybe a -> Observable a
@@ -196,6 +201,14 @@ const
 	flatMapFirst = curry((fn, observable) => observable.flatMapFirst(fn)),
 	// :: (a -> Observable b) -> Observable a -> Observable b
 	flatMapLatest = curry((fn, observable) => observable.flatMapLatest(fn)),
+	/**
+	 * @deprecated
+	 * flatMapLatestMaybe(f, mma) = pipe(
+	 *    () => mma,
+	 *    map_o(map_mb(f)),
+	 *    chain_o_latest(maybeOfBaconObservableToBaconObservableOfMaybe)
+	 * )();
+	 */
 	// :: (a -> Observable b) -> Observable Maybe a -> Observable Maybe b
 	flatMapLatestMaybe = curry((fn, observable) =>
 		flatMapLatest(
@@ -274,7 +287,19 @@ const
 			}
 		);
 	},
-	reject = curry((predicate, observable) => filter(complement(predicate), observable)),
+	// reject :: Property Boolean -> Observable a -> Observable a
+	// reject :: (a -> Boolean) -> Observable a -> Observable a
+	reject = curry((predicate, observable) => {
+		if (predicate instanceof Bacon.Observable) {
+			return filter(predicate.not(), observable);
+		}
+		else if (typeof predicate === "function") {
+			return filter(complement(predicate), observable);
+		}
+		else {
+			throw new Error("first argument must be a function or observable.");
+		}
+	}),
 	// sampledBy :: Observable a -> Observable b -> Observable b
 	sampledBy = curry((sampler, samplee) => samplee.sampledBy(sampler)),
 	// sampledWithBy :: ((a, b) -> c) -> Observable a -> Observable b -> Observable c

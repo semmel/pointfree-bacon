@@ -20,7 +20,8 @@
 	},
 	"files": [
 		"index.js",
-		"dist"
+		"dist",
+		"*.d.ts"
 	],
 	"homepage": "https://github.com/semmel/pointfree-bacon#readme",
 	"license": "JSON",
@@ -37,5 +38,5 @@
 		"test": "mocha"
 	},
 	"type": "module",
-	"version": "0.0.5"
+	"version": "0.0.6"
 }
