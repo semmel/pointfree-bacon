@@ -101,7 +101,7 @@ const
 	
 	/* could be called "lift", could it not?  only if the combinator is curried??
 	* It's not equivalent to the original Bacon.combineWith because THAT accepts a variadic Property arguments. */
-	// combineWith :: ((a, b, ..., m) -> n) -> [Property a, Property b, ..., Property m] -> Property n
+	// combineWith :: ((a, b, ..., m) -> n) -> [Observable a, Observable b, ..., Observable m] -> Property n
 	combineWith = curry((func, streams) => Bacon.combineWith(func, streams)),
 	lift = func => curryN(func.length, unapply(combineWith(func))/*(...streams) => Bacon.combineWith(func, streams)*/),
 	// combine :: (a -> b -> c) -> Observable a -> Observable b -> Property c
@@ -220,6 +220,7 @@ const
 	flatMapP = curry((fn, observable) => flatMap(o(Bacon.fromPromise, fn), observable)),
 	// joinP :: Observable (Promise a) -> Observable a
 	joinP = flatMapP(identity),
+	// flatScan should work for Properties too. It's implementation is based on flatMapConcat.
 	// flatScan :: ((b, a) -> Observable b) -> b -> EventStream a -> Property b
 	flatScan = curry((asyncReducer, seed, eventStream) => eventStream.flatScan(seed, asyncReducer)),
 	
@@ -237,6 +238,8 @@ const
 		)
 		.toProperty()
 	),
+	
+	last = observable => observable.last(),
 	
 	// onValue :: (a -> *) -> Observable a -> (() -> *)
 	onValue = curry((fn, observable) => observable.onValue(fn)),
