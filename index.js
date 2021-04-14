@@ -99,6 +99,9 @@ const
 	
 	// Combinators //
 	
+	// :: Observable a -> Observable b -> Property Boolean
+	isSubsequentPrecededBy = curry((subsequentEventStream, precedingEventStream) => precedingEventStream.awaiting(subsequentEventStream)),
+	
 	/* could be called "lift", could it not?  only if the combinator is curried??
 	* It's not equivalent to the original Bacon.combineWith because THAT accepts a variadic Property arguments. */
 	// combineWith :: ((a, b, ..., m) -> n) -> [Observable a, Observable b, ..., Observable m] -> Property n
@@ -238,6 +241,9 @@ const
 		)
 		.toProperty()
 	),
+	
+	// :: Observable Boolean -> Observable a -> Observable a
+	holdWhen = curry((valve, observable) => observable.holdWhen(valve.toProperty())),
 	
 	last = observable => observable.last(),
 	
@@ -456,8 +462,11 @@ export {
 	fromEvent,
 	fromPromise,
 	fromInterval,
+	holdWhen,
 	isJustValue,
+	isSubsequentPrecededBy,
 	joinP,
+	last,
 	lastToPromise,
 	lift,
 	makeProperty,

@@ -40,6 +40,13 @@ export function fromEvent(name: string): (target: Element) => EventStream<Event>
 
 export function fromPromise<A>(p: Promise<A>): EventStream<A>;
 
+// :: Observable Boolean -> Observable a -> Observable a
+export function holdWhen<A>(valve: Observable<boolean>, ma: Observable<A>): Observable<A>;
+export function holdWhen<A>(valve: Observable<boolean>): (ma: Observable<A>) => Observable<A>;
+
+export function isSubsequentPrecededBy<A, B>(subsequent: Observable<A>, preceding: Observable<B>): Property<boolean>;
+export function isSubsequentPrecededBy<A, B>(subsequent: Observable<A>): (preceding: Observable<B>) => Property<boolean>;
+
 export function last<A>(ma: Observable<A>): Observable<A>;
 
 export function makeProperty<A>(ma: EventStream<A>): Property<A>;
