@@ -69,6 +69,8 @@ import { and as Rand, binary, construct, complement, compose, curry, curryN, equ
 } from 'semmel-ramda';
 import * as Bacon from 'baconjs';
 import {chain as chain_mb, isJust, maybe, map as map_mb, nothing, of as of_mb} from '@visisoft/staticland/maybe';
+import filter from './src/filter.js';
+import reject from './src/reject.js';
 
 const
 	// Creators //
@@ -96,6 +98,8 @@ const
 	
 	// error :: e -> EventStream e any
 	error = e => Bacon.once(new Bacon.Error(e)),
+	
+	makeProperty = eventStream => eventStream.toProperty(),
 	
 	// Combinators //
 	
@@ -187,12 +191,6 @@ const
 	// merge :: Observable a -> Observable b -> Observable (a|b)
 	merge = curry((takenInObservable, observable) => Bacon.mergeAll(observable, takenInObservable)),
 	not = observable => observable.not(),
-	filter = curry((predicateOrProperty, observable) => {
-		if (predicateOrProperty instanceof Bacon.EventStream) {
-			return observable.filter(predicateOrProperty.toProperty());
-		}
-		return observable.filter(predicateOrProperty);
-	}),
 	// flatMap :: (a -> Observable b) -> Observable a -> Observable b
 	flatMap = curry((fn, observable) => observable.flatMap(fn)),
 	// filterJust :: Observable Maybe a -> Observable a
@@ -296,19 +294,6 @@ const
 			}
 		);
 	},
-	// reject :: Property Boolean -> Observable a -> Observable a
-	// reject :: (a -> Boolean) -> Observable a -> Observable a
-	reject = curry((predicate, observable) => {
-		if (predicate instanceof Bacon.Observable) {
-			return filter(predicate.not(), observable);
-		}
-		else if (typeof predicate === "function") {
-			return filter(complement(predicate), observable);
-		}
-		else {
-			throw new Error("first argument must be a function or observable.");
-		}
-	}),
 	// sampledBy :: Observable a -> Observable b -> Observable b
 	sampledBy = curry((sampler, samplee) => samplee.sampledBy(sampler)),
 	// sampledWithBy :: ((a, b) -> c) -> Observable a -> Observable b -> Observable c
@@ -401,7 +386,6 @@ const
 	lastToPromise = observable => observable.toPromise(),
 	// toProperty :: a -> EventStream a -> Property a
 	toProperty = curry((initialValue, eventStream) => eventStream.toProperty(initialValue)),
-	makeProperty = eventStream => eventStream.toProperty(),
 	// withLatest :: ((a, b) -> c) -> Observable a -> Observable b -> Observable c
 	withLatest = curry((combinator, samplee, sampler) => sampler.withLatestFrom(samplee, flip(binary(combinator)))),
 	// withLatestAsPair :: Observable a -> Observable b -> Observable Pair a b

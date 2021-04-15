@@ -64,6 +64,10 @@ export function reject<A>(fn: (x: A) => boolean): (ma: Observable<A>) => Observa
 export function reject<A>(valve: Observable<boolean>, ma: Observable<A>): Observable<A>;
 export function reject<A>(valve: Observable<boolean>): (ma: Observable<A>) => Observable<A>;
 
+// samples :: Observable a -> EventStream b -> EventStream a
+export function samples<A, B>(samplee: Observable<B>, sampler: Observable<A>): Observable<B>;
+export function samples<A, B>(samplee: Observable<B>): (sampler: Observable<A>) => Observable<B>;
+
 export function scan<A, B>(reducer: (acc: B, val: A) => B, seed: B, ma: Observable<A>): Observable<B>;
 export function scan<A, B>(reducer: (acc: B, val: A) => B, seed: B): (ma: Observable<A>) => Observable<B>;
 export function scan<A, B>(reducer: (acc: B, val: A) => B): (seed: B) => (ma: Observable<A>) => Observable<B>;
@@ -79,5 +83,5 @@ export function tap<A>(fn: (x: A) => void): (ma: Observable<A>) => Observable<A>
 export function toProperty<A>(x: A, ma: EventStream<A>): Property<A>;
 export function toProperty<A>(x: A): (ma: EventStream<A>) => Property<A>;
 
-export function withLatestAsPair<A, B>(ma: Observable<A>, mb: Observable<B>): Observable<[A, B]>;
-export function withLatestAsPair<A, B>(ma: Observable<A>): (mb: Observable<B>) => Observable<[A, B]>;
+export function withLatestAsPair<A, B>(samplee: Observable<A>, sampler: Observable<B>): Observable<[A, B]>;
+export function withLatestAsPair<A, B>(samplee: Observable<A>): (sampler: Observable<B>) => Observable<[A, B]>;
