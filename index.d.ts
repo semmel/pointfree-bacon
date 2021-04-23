@@ -1,4 +1,5 @@
 import {EventStream, Observable, Property} from 'baconjs';
+import {StateF} from "baconjs/types/withstatemachine";
 
 export function chain<A, B>(fn: (x: A) => Observable<B>, ma: Observable<A>): Observable<B>;
 export function chain<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) => Observable<B>;
@@ -35,8 +36,8 @@ export function flatMap<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) 
 export function flatMapLatest<A, B>(fn: (x: A) => Observable<B>, ma: Observable<A>): Observable<B>;
 export function flatMapLatest<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) => Observable<B>;
 
-export function fromEvent(name: string, target: Element): EventStream<Event>;
-export function fromEvent(name: string): (target: Element) => EventStream<Event>;
+export function fromEvent(name: string, target: any): EventStream<Event>;
+export function fromEvent(name: string): (target: any) => EventStream<Event>;
 
 export function fromPromise<A>(p: Promise<A>): EventStream<A>;
 
@@ -57,6 +58,8 @@ export function map<A, B>(fn: (x: A) => B): (ma: Observable<A>) => Observable<B>
 export function merge<A>(ma1: Observable<A>, ma2: Observable<A>): Observable<A>;
 export function merge<A>(ma1: Observable<A>):  (ma2: Observable<A>) => Observable<A>;
 
+export function now<A>(x: A): EventStream<A>;
+
 export  function of<A>(x: A): EventStream<A>;
 
 export function reject<A>(fn: (x: A) => boolean, ma: Observable<A>): Observable<A>;
@@ -72,7 +75,14 @@ export function scan<A, B>(reducer: (acc: B, val: A) => B, seed: B, ma: Observab
 export function scan<A, B>(reducer: (acc: B, val: A) => B, seed: B): (ma: Observable<A>) => Observable<B>;
 export function scan<A, B>(reducer: (acc: B, val: A) => B): (seed: B) => (ma: Observable<A>) => Observable<B>;
 
+export function skip<A>(count: number, ma: Observable<A>): Observable<A>;
+export function skip<A>(count: number): (ma: Observable<A>) => Observable<A>;
+
+export function skipIdentical<A>(ma: Observable<A>): Observable<A>;
 export function skipRamdaLikeEquals<A>(ma: Observable<A>): Observable<A>;
+
+export function take<A>(count: number, ma: Observable<A>): Observable<A>;
+export function take<A>(count: number): (ma: Observable<A>) => Observable<A>;
 
 export function takeWhile<A>(f: (Property<boolean>|((a: A) => boolean)), ma: Observable<A>): Observable<A>;
 export function takeWhile<A>(f: (Property<boolean>|((a: A) => boolean))): (ma: Observable<A>) => Observable<A>;
@@ -85,3 +95,7 @@ export function toProperty<A>(x: A): (ma: EventStream<A>) => Property<A>;
 
 export function withLatestAsPair<A, B>(samplee: Observable<A>, sampler: Observable<B>): Observable<[A, B]>;
 export function withLatestAsPair<A, B>(samplee: Observable<A>): (sampler: Observable<B>) => Observable<[A, B]>;
+
+export function withStateMachine<A, S, B>(reducer: StateF<A, S, B>, seed: S, ma: Observable<A>): Observable<B>;
+export function withStateMachine<A, S, B>(reducer: StateF<A, S, B>): (seed: S, ma: Observable<A>) => Observable<B>;
+export function withStateMachine<A, S, B>(reducer: StateF<A, S, B>): (seed: S) => (ma: Observable<A>) => Observable<B>;

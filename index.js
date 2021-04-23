@@ -390,6 +390,7 @@ const
 	withLatest = curry((combinator, samplee, sampler) => sampler.withLatestFrom(samplee, flip(binary(combinator)))),
 	// withLatestAsPair :: Observable a -> Observable b -> Observable Pair a b
 	withLatestAsPair = withLatest(pair),
+	withStateMachine = curry((reducer, initialValue, observable) => observable.withStateMachine(initialValue, reducer)),
 	
 	// push :: a -> Bus a -> Bus a
 	push = curry((valueOrBaconError, bus) => {
@@ -488,6 +489,7 @@ export {
 	toProperty,
 	transform,
 	withLatest,
-	withLatestAsPair
+	withLatestAsPair,
+	withStateMachine
 };
 
