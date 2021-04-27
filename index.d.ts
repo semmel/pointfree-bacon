@@ -84,8 +84,8 @@ export function skipRamdaLikeEquals<A>(ma: Observable<A>): Observable<A>;
 export function take<A>(count: number, ma: Observable<A>): Observable<A>;
 export function take<A>(count: number): (ma: Observable<A>) => Observable<A>;
 
-export function takeWhile<A>(f: (Property<boolean>|((a: A) => boolean)), ma: Observable<A>): Observable<A>;
-export function takeWhile<A>(f: (Property<boolean>|((a: A) => boolean))): (ma: Observable<A>) => Observable<A>;
+export function takeWhile<A>(f: (Observable<boolean>|((a: A) => boolean)), ma: Observable<A>): Observable<A>;
+export function takeWhile<A>(f: (Observable<boolean>|((a: A) => boolean))): (ma: Observable<A>) => Observable<A>;
 
 export function tap<A>(fn: (x: A) => void, ma: Observable<A>): Observable<A>;
 export function tap<A>(fn: (x: A) => void): (ma: Observable<A>) => Observable<A>;

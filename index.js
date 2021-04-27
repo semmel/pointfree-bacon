@@ -71,6 +71,7 @@ import * as Bacon from 'baconjs';
 import {chain as chain_mb, isJust, maybe, map as map_mb, nothing, of as of_mb} from '@visisoft/staticland/maybe';
 import filter from './src/filter.js';
 import reject from './src/reject.js';
+import takeWhile from './src/takeWhile.js';
 
 const
 	// Creators //
@@ -372,7 +373,6 @@ const
 	})),
 	take = curry((count, observable) => observable.take(count)),
 	takeUntil = curry((stopper, observable) => observable.takeUntil(stopper)),
-	takeWhile = curry((predicateOrProperty, observable) => observable.takeWhile(predicateOrProperty)),
 	throttle = curry((minimumEmissionInterval, observable) => observable.throttle(minimumEmissionInterval)),
 	// toEventStream :: Property a -> EventStream a
 	toEventStream = property => property.toEventStream(),
