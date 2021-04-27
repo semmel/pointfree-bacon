@@ -1,4 +1,5 @@
 import * as Bacon from "baconjs";
+import {curry} from "semmel-ramda";
 
 const
 	/**
@@ -21,4 +22,4 @@ const
 		return src.takeWhile(predicateOrObservable);
 	};
 
-export default takeWhile;
+export default curry(takeWhile);

@@ -21,6 +21,9 @@ export function debounceAll<A>(delay: number): (ma: Observable<A>) => Observable
 export function delay<A>(dt: number, ma: Observable<A>): Observable<A>;
 export function delay<A>(dt: number): (ma: Observable<A>) => Observable<A>;
 
+export function doLog<A>(label: string, ma: Observable<A>): Observable<A>;
+export function doLog<A>(label: string): (ma: Observable<A>) => Observable<A>;
+
 export function error(e: any): Observable<any>;
 
 export function filter<A>(fn: (x: A) => boolean, ma: Observable<A>): Observable<A>;
@@ -36,8 +39,8 @@ export function flatMap<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) 
 export function flatMapLatest<A, B>(fn: (x: A) => Observable<B>, ma: Observable<A>): Observable<B>;
 export function flatMapLatest<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) => Observable<B>;
 
-export function fromEvent(name: string, target: any): EventStream<Event>;
-export function fromEvent(name: string): (target: any) => EventStream<Event>;
+export function fromEvent<A>(name: string, target: any): EventStream<A>;
+export function fromEvent<A>(name: string): (target: any) => EventStream<A>;
 
 export function fromPromise<A>(p: Promise<A>): EventStream<A>;
 
