@@ -4,6 +4,10 @@ import {StateF} from "baconjs/types/withstatemachine";
 export function chain<A, B>(fn: (x: A) => Observable<B>, ma: Observable<A>): Observable<B>;
 export function chain<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) => Observable<B>;
 
+// flatMapError :: (e -> Observable d b) -> Observable e a -> Observable d b
+export function chainRej<A>(onError: (e: any) => Observable<A>, ma: Observable<A>) : Observable<A>;
+export function chainRej<A>(onError: (e: any) => Observable<A>): (ma: Observable<A>) => Observable<A>;
+
 export function concat<A, B>(ma: Observable<A>, mb: Observable<B>): Observable<A|B>;
 export function concat<A, B>(ma: Observable<A>): (mb: Observable<B>) => Observable<A|B>;
 
@@ -33,11 +37,28 @@ export function filter<A>(valve: Observable<boolean>): (ma: Observable<A>) => Ob
 
 export function first<A>(ma: Observable<A>): Observable<A>;
 
+export function firstToPromise<A>(ma: Observable<A>): Promise<A>;
+
 export function flatMap<A, B>(fn: (x: A) => Observable<B>, ma: Observable<A>): Observable<B>;
 export function flatMap<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) => Observable<B>;
 
 export function flatMapLatest<A, B>(fn: (x: A) => Observable<B>, ma: Observable<A>): Observable<B>;
 export function flatMapLatest<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) => Observable<B>;
+
+/** @deprecated */
+export function flatMapLatestMaybe<A, B>(fn: (a: A) => Observable<B>, ma: Observable<A>): Observable<B>;
+
+export function flatScan<A, B>(reducer: (b: B, a: A) => Observable<B>, init: B, ma: EventStream<A>): Property<B>;
+export function flatScan<A, B>(reducer: (b: B, a: A) => Observable<B>, init: B): (ma: EventStream<A>) => Property<B>;
+export function flatScan<A, B>(reducer: (b: B) => (a: A) => Observable<B>, init: B, ma: EventStream<A>): Property<B>;
+
+export function flatScanLatest<A, B>(reducer: (b: B, a: A) => Observable<B>, init: B, ma: EventStream<A>): Property<B>;
+export function flatScanLatest<A, B>(reducer: (b: B, a: A) => Observable<B>, init: B): (ma: EventStream<A>) => Property<B>;
+export function flatScanLatest<A, B>(reducer: (b: B) => (a: A) => Observable<B>, init: B, ma: EventStream<A>): Property<B>;
+
+export function fold<A, B>(reducer: (acc: B, val: A) => B, seed: B, ma: Observable<A>): Observable<B>;
+export function fold<A, B>(reducer: (acc: B, val: A) => B, seed: B): (ma: Observable<A>) => Observable<B>;
+export function fold<A, B>(reducer: (acc: B, val: A) => B): (seed: B) => (ma: Observable<A>) => Observable<B>;
 
 export function fromEvent<A>(name: string, target: any): EventStream<A>;
 export function fromEvent<A>(name: string): (target: any) => EventStream<A>;
@@ -52,6 +73,11 @@ export function isSubsequentPrecededBy<A, B>(subsequent: Observable<A>, precedin
 export function isSubsequentPrecededBy<A, B>(subsequent: Observable<A>): (preceding: Observable<B>) => Property<boolean>;
 
 export function last<A>(ma: Observable<A>): Observable<A>;
+
+export function lastToPromise<A>(ma: Observable<A>): Promise<A>;
+
+export function later<A>(dt: number, a: A): EventStream<A>;
+export function later<A>(dt: number): (a: A) => EventStream<A>;
 
 export function makeProperty<A>(ma: EventStream<A>): Property<A>;
 
@@ -81,8 +107,13 @@ export function scan<A, B>(reducer: (acc: B, val: A) => B): (seed: B) => (ma: Ob
 export function skip<A>(count: number, ma: Observable<A>): Observable<A>;
 export function skip<A>(count: number): (ma: Observable<A>) => Observable<A>;
 
+/** @deprecated */
+export function skipDuplicates<A>(ma: Observable<A>): Observable<A>;
 export function skipIdentical<A>(ma: Observable<A>): Observable<A>;
 export function skipRamdaLikeEquals<A>(ma: Observable<A>): Observable<A>;
+
+export function skipSame<A>(cmp: (left: A, right: A) => boolean, ma: Observable<A>): Observable<A>;
+export function skipSame<A>(cmp: (left: A, right: A) => boolean): (ma: Observable<A>) => Observable<A>;
 
 export function take<A>(count: number, ma: Observable<A>): Observable<A>;
 export function take<A>(count: number): (ma: Observable<A>) => Observable<A>;

@@ -100,6 +100,9 @@ const
 	// error :: e -> EventStream e any
 	error = e => Bacon.once(new Bacon.Error(e)),
 	
+	// :: number -> a -> EventStream a
+	later = curry((delay, value) => Bacon.later(delay, value)),
+	
 	makeProperty = eventStream => eventStream.toProperty(),
 	
 	// Combinators //
@@ -453,6 +456,7 @@ export {
 	joinP,
 	last,
 	lastToPromise,
+	later,
 	lift,
 	makeProperty,
 	mapEnd,
