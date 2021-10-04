@@ -15,6 +15,13 @@ export function combine<A, B, C>(f: (a: A, b: B) => C, ma: Observable<A>, mb: Ob
 export function combine<A, B, C>(f: (a: A, b: B) => C): (ma: Observable<A>, mb: Observable<B>) => Observable<C>;
 export function combine<A, B, C>(f: (a: A, b: B) => C): (ma: Observable<A>) => (mb: Observable<B>) => Observable<C>;
 
+export function combineConsecutive<A, B>(combiner:(a: A, b: A) => B, seed: A, ma: Observable<A>): Property<B>;
+export function combineConsecutive<A, B>(combiner:(a: A, b: A) => B, seed: A): (ma: Observable<A>) => Property<B>;
+export function combineConsecutive<A, B>(combiner:(a: A, b: A) => B): (seed: A) => (ma: Observable<A>) => Property<B>;
+export function combineConsecutive<A, B>(combiner:(a: A) => (b: A) => B, seed: A, ma: Observable<A>): Property<B>;
+export function combineConsecutive<A, B>(combiner:(a: A) => (b: A) => B, seed: A): (ma: Observable<A>) => Property<B>;
+export function combineConsecutive<A, B>(combiner:(a: A) => (b: A) => B): (seed: A) => (ma: Observable<A>) => Property<B>;
+
 export function combineWith<A, B, C, D>(f: (a: A, b: B, c: C) => D, ma: Observable<A>, mb: Observable<B>, mc: Observable<C>): Observable<D>;
 export function combineWith<A, B, C, D>(f: (a: A, b: B, c: C) => D): (ma: Observable<A>, mb: Observable<B>, mc: Observable<C>) => Observable<D>;
 export function combineWith<A, B, C, D>(f: (a: A, b: B, c: C) => D): (ma: Observable<A>) => (mb: Observable<B>) => (mc: Observable<C>) => Observable<D>;
@@ -95,6 +102,8 @@ export function reject<A>(fn: (x: A) => boolean, ma: Observable<A>): Observable<
 export function reject<A>(fn: (x: A) => boolean): (ma: Observable<A>) => Observable<A>;
 export function reject<A>(valve: Observable<boolean>, ma: Observable<A>): Observable<A>;
 export function reject<A>(valve: Observable<boolean>): (ma: Observable<A>) => Observable<A>;
+
+export function runEffects<A>(ma: Observable<A>): () => void;
 
 // samples :: Observable a -> EventStream b -> EventStream a
 export function samples<A, B>(samplee: Observable<B>, sampler: Observable<A>): Observable<B>;

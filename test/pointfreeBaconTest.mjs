@@ -13,7 +13,7 @@ import {
 	fold as reduce_o,
 	reject,
 	tap as tap_o,
-	chainTap
+	chainTap, skipSame
 } from
 		'../index.js';
 import { nothing, of } from
@@ -133,5 +133,39 @@ describe("chainTap", function() {
 			e => { assert.strictEqual(e, "e-foo"); }
 		)
 	);
+});
+
+describe("skipSame", function() {
+	it("skips consecutive 'equals'", () =>
+		skipSame(equals, Bacon.fromArray([0, 1, 1, 2, 3, 2, 4, 4]))
+		.reduce([], flip(append))
+		.toPromise()
+		.then(xs => {
+			assert.deepStrictEqual(xs, [0, 1, 2, 3, 2, 4]);
+		})
+	);
+	
+	it("calls the comparison fn only with event values", () => {
+		class Foo {
+			constructor(text) {
+				this.text = text;
+			}
+		}
+		
+		return skipSame(
+			(a, b) => {
+				assert.instanceOf(a, Foo);
+				assert.instanceOf(b, Foo);
+				return a.text === b.text;
+			},
+			Bacon.fromArray([new Foo("a"), new Foo("b"), new Foo("b"), new Foo("a")])
+		)
+		.map(foo => foo.text)
+		.reduce([], flip(append))
+		.toPromise()
+		.then(xs => {
+			assert.deepStrictEqual(xs, ["a", "b", "a"]);
+		});
+	});
 });
 

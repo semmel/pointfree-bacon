@@ -117,6 +117,10 @@ const
 	lift = func => curryN(func.length, unapply(combineWith(func))/*(...streams) => Bacon.combineWith(func, streams)*/),
 	// combine :: (a -> b -> c) -> Observable a -> Observable b -> Property c
 	combine = curry((combiner, left, right) => left.combine(right, combiner)),
+	// :: ((a -> a) -> b) -> a -> Observable a -> Property b
+	combineConsecutive = curry((combiner, seed, observable) =>
+		observable.diff(seed, combiner)
+	),
 	// justLeftCombine :: (a -> b -> c) -> Observable b -> Observable Maybe a -> Property Maybe c
 	justLeftCombine = curry((justCombiner, right, left) =>
 		left.combine(right, (maybeLeft, rightValue) => map_mb(partialRight(justCombiner, [rightValue]), maybeLeft))
@@ -333,7 +337,7 @@ const
 				return [acc, [event]];
 			}
 			
-			return equals(acc, event.value)
+			return (acc !== nothingSeedValue) && equals(acc, event.value)
 				? [acc, []]
 				: [event.value, [event]];
 		}),
@@ -349,7 +353,7 @@ const
 				return [acc, [event]];
 			}
 			
-			return isEqual(acc, event.value)
+			return (acc !== nothingSeedValue) && isEqual(acc, event.value)
 				? [acc, []]
 				: [event.value, [event]];
 		})
@@ -417,6 +421,7 @@ export {
 	concat,
 	changes,
 	combine,
+	combineConsecutive,
 	constant,
 	justLeftCombine,
 	justLeftCombineChainToMaybe,
