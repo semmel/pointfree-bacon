@@ -94,6 +94,7 @@ export function map<A, B>(fn: (x: A) => B): (ma: Observable<A>) => Observable<B>
 export function merge<A>(ma1: Observable<A>, ma2: Observable<A>): Observable<A>;
 export function merge<A>(ma1: Observable<A>):  (ma2: Observable<A>) => Observable<A>;
 
+export function never(): EventStream<any>;
 export function now<A>(x: A): EventStream<A>;
 
 export  function of<A>(x: A): EventStream<A>;
@@ -126,6 +127,9 @@ export function skipSame<A>(cmp: (left: A, right: A) => boolean): (ma: Observabl
 
 export function take<A>(count: number, ma: Observable<A>): Observable<A>;
 export function take<A>(count: number): (ma: Observable<A>) => Observable<A>;
+
+export function takeUntil<A>(stopper: Observable<any>, ma: Observable<A>): Observable<A>;
+export function takeUntil<A>(stopper: Observable<any>): (ma: Observable<A>) => Observable<A>;
 
 export function takeWhile<A>(f: (Observable<boolean>|((a: A) => boolean)), ma: Observable<A>): Observable<A>;
 export function takeWhile<A>(f: (Observable<boolean>|((a: A) => boolean))): (ma: Observable<A>) => Observable<A>;

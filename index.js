@@ -68,6 +68,7 @@ import { and as Rand, binary, construct, complement, compose, curry, curryN, equ
 	identity, identical, o, or as Ror, pair, partialRight, pipe, T, tap as Rtap, tryCatch, unapply, unary
 } from 'semmel-ramda';
 import * as Bacon from 'baconjs';
+// this dependency is just introduced for in the meantime deprecated functions
 import {chain as chain_mb, isJust, maybe, map as map_mb, nothing, of as of_mb} from '@visisoft/staticland/maybe';
 import filter from './src/filter.js';
 import reject from './src/reject.js';
@@ -201,6 +202,7 @@ const
 	not = observable => observable.not(),
 	// flatMap :: (a -> Observable b) -> Observable a -> Observable b
 	flatMap = curry((fn, observable) => observable.flatMap(fn)),
+	/** @deprecated see @visisoft-local/lib/observables/nothingToNeverOrJustToOnce */
 	// filterJust :: Observable Maybe a -> Observable a
 	filterJust = flatMap(maybe(Bacon.never, identity)),
 	// flatMapError :: (e -> Observable d b) -> Observable e a -> Observable d b
@@ -409,6 +411,7 @@ export let chain = flatMap;
 export let chainRej = flatMapError;
 export let of = now;
 export let map = map_o;
+export let never = Bacon.never;
 export let prepend = concat;
 export let skipEquals = skipRamdaLikeEquals;
 
