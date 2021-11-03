@@ -1,6 +1,9 @@
 import {EventStream, Observable, Property} from 'baconjs';
 import {StateF} from "baconjs/types/withstatemachine";
 
+export function bi_tap<T>(onFailure: (e: any) => void, onSuccess: (t?: T) => any, p: Observable<T>): Observable<T>;
+export function bi_tap<T>(onFailure: (e: any) => void, onSuccess: (t?: T) => any): (p: Observable<T>) => Observable<T>;
+
 export function chain<A, B>(fn: (x: A) => Observable<B>, ma: Observable<A>): Observable<B>;
 export function chain<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) => Observable<B>;
 
@@ -139,6 +142,10 @@ export function tap<A>(fn: (x: A) => void): (ma: Observable<A>) => Observable<A>
 
 export function toProperty<A>(x: A, ma: EventStream<A>): Property<A>;
 export function toProperty<A>(x: A): (ma: EventStream<A>) => Property<A>;
+
+export function withLatest<A, B, C>(combiner: (sampleeEvent: A, samplerEvent: B) => C, samplee: Observable<A>, sampler: Observable<B>): Observable<C>;
+export function withLatest<A, B, C>(combiner: (sampleeEvent: A, samplerEvent: B) => C, samplee: Observable<A>): (sampler: Observable<B>) => Observable<C>;
+export function withLatest<A, B, C>(combiner: (sampleeEvent: A, samplerEvent: B) => C): (samplee: Observable<A>) => (sampler: Observable<B>) => Observable<C>;
 
 export function withLatestAsPair<A, B>(samplee: Observable<A>, sampler: Observable<B>): Observable<[A, B]>;
 export function withLatestAsPair<A, B>(samplee: Observable<A>): (sampler: Observable<B>) => Observable<[A, B]>;

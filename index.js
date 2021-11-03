@@ -73,6 +73,7 @@ import {chain as chain_mb, isJust, maybe, map as map_mb, nothing, of as of_mb} f
 import filter from './src/filter.js';
 import reject from './src/reject.js';
 import takeWhile from './src/takeWhile.js';
+import bi_tap from './src/bi_tap.js';
 
 const
 	// Creators //
@@ -310,6 +311,11 @@ const
 	sampledWithBy = curry((combinatorFn, sampler, samplee) => samplee.sampledBy(sampler, flip(combinatorFn))),
 	// samples :: Observable a -> EventStream b -> EventStream a
 	samples = curry((samplee, sampler) => sampler.withLatestFrom(samplee, (unused, observableValue) => observableValue)),
+	// withLatest :: ((a, b) -> c) -> Observable a -> Observable b -> Observable c
+	withLatest = curry((combinator, samplee, sampler) => sampler.withLatestFrom(samplee, flip(binary(combinator)))),
+	// withLatestAsPair :: Observable a -> Observable b -> Observable Pair a b
+	withLatestAsPair = withLatest(pair),
+	
 	nothingSeedValue = Symbol('nothingSeedValue'),
 	/**
 	 * Different to `.debounce` this implementation also delays initial values of properties.
@@ -395,10 +401,6 @@ const
 	lastToPromise = observable => observable.toPromise(),
 	// toProperty :: a -> EventStream a -> Property a
 	toProperty = curry((initialValue, eventStream) => eventStream.toProperty(initialValue)),
-	// withLatest :: ((a, b) -> c) -> Observable a -> Observable b -> Observable c
-	withLatest = curry((combinator, samplee, sampler) => sampler.withLatestFrom(samplee, flip(binary(combinator)))),
-	// withLatestAsPair :: Observable a -> Observable b -> Observable Pair a b
-	withLatestAsPair = withLatest(pair),
 	withStateMachine = curry((reducer, initialValue, observable) => observable.withStateMachine(initialValue, reducer)),
 	
 	// push :: a -> Bus a -> Bus a
@@ -418,6 +420,7 @@ export let skipEquals = skipRamdaLikeEquals;
 export {
 	and,
 	append,
+	bi_tap,
 	bufferWithCount,
 	chainTap,
 	coalesce,
