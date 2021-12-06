@@ -73,6 +73,9 @@ export function fold<A, B>(reducer: (acc: B, val: A) => B): (seed: B) => (ma: Ob
 export function fromEvent<A>(name: string, target: any): EventStream<A>;
 export function fromEvent<A>(name: string): (target: any) => EventStream<A>;
 
+export function fromInterval<A>(dt: number, a: A): EventStream<A>;
+export function fromInterval<A>(dt: number): (a: A) => EventStream<A>;
+
 export function fromPromise<A>(p: Promise<A>): EventStream<A>;
 
 // :: Observable Boolean -> Observable a -> Observable a
@@ -108,6 +111,13 @@ export function reject<A>(valve: Observable<boolean>, ma: Observable<A>): Observ
 export function reject<A>(valve: Observable<boolean>): (ma: Observable<A>) => Observable<A>;
 
 export function runEffects<A>(ma: Observable<A>): () => void;
+
+export function sampledBy<A, B>(sampler: Observable<A>, samplee: Observable<B>): Observable<B>;
+export function sampledBy<A, B>(sampler: Observable<A>): (samplee: Observable<B>) => Observable<B>;
+
+export function sampledWithBy<A, B, C>(combinator: (a: A, b: B) => C, sampler: Observable<A>, samplee: Observable<B>): Observable<C>;
+export function sampledWithBy<A, B, C>(combinator: (a: A, b: B) => C): (sampler: Observable<A>, samplee: Observable<B>) => Observable<C>;
+export function sampledWithBy<A, B, C>(combinator: (a: A, b: B) => C, sampler: Observable<A>): (samplee: Observable<B>)=> Observable<C>;
 
 // samples :: Observable a -> EventStream b -> EventStream a
 export function samples<A, B>(samplee: Observable<B>, sampler: Observable<A>): Observable<B>;
@@ -152,4 +162,5 @@ export function withLatestAsPair<A, B>(samplee: Observable<A>): (sampler: Observ
 
 export function withStateMachine<A, S, B>(reducer: StateF<A, S, B>, seed: S, ma: Observable<A>): Observable<B>;
 export function withStateMachine<A, S, B>(reducer: StateF<A, S, B>): (seed: S, ma: Observable<A>) => Observable<B>;
+export function withStateMachine<A, S, B>(reducer: StateF<A, S, B>, seed: S): (ma: Observable<A>) => Observable<B>;
 export function withStateMachine<A, S, B>(reducer: StateF<A, S, B>): (seed: S) => (ma: Observable<A>) => Observable<B>;
