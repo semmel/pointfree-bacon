@@ -145,8 +145,9 @@ const
 	// append :: Observable b -> Observable a -> Observable (a|b)
 	append = curry((nextObservable, precedingObservable) => precedingObservable.concat(nextObservable)),
 	
-	// Buffering //
+	//// Buffering ////
 	
+	bufferingThrottle = curry((minimumInterval, observable) => observable.bufferingThrottle(minimumInterval)),
 	// n = Integer
 	// :: n -> Observable e a -> Observable e Array n a
 	bufferWithCount = curry((count, observable) => observable.bufferWithCount(count)),
@@ -421,6 +422,7 @@ export {
 	and,
 	append,
 	bi_tap,
+	bufferingThrottle,
 	bufferWithCount,
 	chainTap,
 	coalesce,
