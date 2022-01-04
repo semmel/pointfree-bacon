@@ -212,8 +212,12 @@ const
 	// flatMapConcat :: (a -> Observable b) -> Observable a -> Observable b
 	flatMapConcat = curry((fn, observable) => observable.flatMapConcat(fn)),
 	flatMapFirst = curry((fn, observable) => observable.flatMapFirst(fn)),
+	// This version ensures that the preceding sub-stream is disposed BEFORE the next is created
+	// See https://github.com/baconjs/bacon.js/issues/783
 	// :: (a -> Observable b) -> Observable a -> Observable b
-	flatMapLatest = curry((fn, observable) => observable.flatMapLatest(fn)),
+	flatMapLatest = curry((fn, observable) => observable.flatMapLatest(
+		x => Bacon.later(0, x).flatMap(fn)
+	)),
 	/**
 	 * @deprecated
 	 * flatMapLatestMaybe(f, mma) = pipe(

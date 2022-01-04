@@ -41,6 +41,9 @@ export function combineWith<A, B, C, D>(f: (a: A, b: B, c: C) => D): (ma: Observ
 export function debounceAll<A>(delay: number, ma: Observable<A>): Observable<A>;
 export function debounceAll<A>(delay: number): (ma: Observable<A>) => Observable<A>;
 
+export function debounceImmediate<A>(dt: number, ma: Observable<A>): Observable<A>;
+export function debounceImmediate<A>(dt: number): (ma: Observable<A>) => Observable<A>;
+
 export function delay<A>(dt: number, ma: Observable<A>): Observable<A>;
 export function delay<A>(dt: number): (ma: Observable<A>) => Observable<A>;
 
@@ -145,6 +148,9 @@ export function scan<A, B>(reducer: (acc: B, val: A) => B): (seed: B) => (ma: Ob
 
 export function skip<A>(count: number, ma: Observable<A>): Observable<A>;
 export function skip<A>(count: number): (ma: Observable<A>) => Observable<A>;
+
+export function slidingWindow<A>(maxCount: number, minCount: number, ma: Observable<A>): Property<A[]>;
+export function slidingWindow<A>(maxCount: number, minCount: number): (ma: Observable<A>) => Property<A[]>;
 
 /** @deprecated */
 export function skipDuplicates<A>(ma: Observable<A>): Observable<A>;

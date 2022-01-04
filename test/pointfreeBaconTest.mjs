@@ -7,13 +7,15 @@ import {
 	filterJust,
 	firstToPromise,
 	flatMap,
+	flatMapLatest,
 	flatScanLatest,
 	lastToPromise,
 	mapEnd,
 	fold as reduce_o,
 	reject,
 	tap as tap_o,
-	chainTap, skipSame
+	take as take_o,
+	chainTap, skipSame,
 } from
 		'../index.js';
 import { nothing, of } from
@@ -48,6 +50,38 @@ describe("flatScanLatest", function() {
 		flatMap(Bacon.try(xs => { assert.deepStrictEqual(xs, [0, 10, 11, 12, 112, 1112, 1113, 1114]); })),
 		lastToPromise
 	));
+});
+
+describe("flatMapLatest", function() {
+	this.slow(1000);
+	
+	it ("disposes the preceding sub-stream before creating the following", () => {
+		const
+			lifecycleEvents = [],
+			
+			subStream = x => {
+				lifecycleEvents.push(`C${x}`);
+				return Bacon.fromBinder(sink => {
+					const interval = setInterval(sink, 10, x);
+					return () => {
+						lifecycleEvents.push(`D${x}`);
+						clearInterval(interval);
+					};
+				});
+			};
+		
+		return pipe(
+			() => Bacon.sequentially(25, [1, 2, 3]),
+			flatMapLatest(subStream),
+			take_o(6),
+			reduce_o(flip(append), []),
+			lastToPromise
+		)()
+		.then(xs => {
+			assert.deepStrictEqual(xs, [1, 1, 2, 2, 3, 3]);
+			assert.deepStrictEqual(lifecycleEvents, ["C1", "D1", "C2", "D2", "C3", "D3"]);
+		});
+	});
 });
 
 describe("Pointfree Maybe Streams", function () {
