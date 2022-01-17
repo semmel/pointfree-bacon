@@ -1,5 +1,5 @@
 import * as Bacon from "baconjs";
-import {curry} from "semmel-ramda";
+import {curry} from "ramda";
 
 const
 	/**

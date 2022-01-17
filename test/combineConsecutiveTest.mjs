@@ -1,4 +1,4 @@
-import {append, equals, flip, identity, o} from 'semmel-ramda';
+import {append, equals, flip, identity, o} from 'ramda';
 import chai from 'chai';
 import {combineConsecutive} from "../index.js";
 import * as Bacon from "baconjs";

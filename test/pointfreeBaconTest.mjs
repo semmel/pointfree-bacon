@@ -1,4 +1,4 @@
-import { always, append, equals, flip, identity, o, pipe} from 'semmel-ramda';
+import { always, append, equals, flip, identity, o, pipe} from 'ramda';
 import chai from 'chai';
 import * as Bacon from
 		'baconjs';

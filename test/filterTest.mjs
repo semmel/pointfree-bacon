@@ -1,7 +1,7 @@
 import chai from 'chai';
 import {filter, reject} from "../index.js";
 import * as Bacon from "baconjs";
-import {append, flip} from "semmel-ramda";
+import {append, flip} from "ramda";
 
 const
 	assert = chai.assert;

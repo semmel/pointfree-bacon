@@ -1,4 +1,4 @@
-import {complement, curry, pair} from "semmel-ramda";
+import {complement, curry, pair} from "ramda";
 import * as Bacon from "baconjs";
 import filter from "./filter.js";
 

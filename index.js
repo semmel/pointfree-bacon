@@ -66,7 +66,7 @@
 
 import { and as Rand, binary, construct, complement, compose, curry, curryN, equals, F, flip,
 	identity, identical, o, or as Ror, pair, partialRight, pipe, T, tap as Rtap, tryCatch, unapply, unary
-} from 'semmel-ramda';
+} from 'ramda';
 import * as Bacon from 'baconjs';
 // this dependency is just introduced for in the meantime deprecated functions
 import {chain as chain_mb, isJust, maybe, map as map_mb, nothing, of as of_mb} from '@visisoft/staticland/maybe';
@@ -244,14 +244,16 @@ const
 	// flatScanLatest :: ((b, a) -> Observable b) -> b -> EventStream a -> Property b
 	flatScanLatest = curry((asyncReducer, seed, observable) =>
 		Bacon.once(seed)
-		.concat(
-			observable
-			.flatMapLatest((function(){
-				let state = seed;
-				return value =>
-					asyncReducer(state, value)
-					.doAction(innerValue => { state = innerValue; });
-			}()))
+		// note the difference between flatMapLatest(fn, o) and o.flatMapLatest(fn)
+		.concat(flatMapLatest(
+				(function(){
+					let state = seed;
+					return value =>
+						asyncReducer(state, value)
+						.doAction(innerValue => { state = innerValue; });
+				}())
+				, observable
+			)
 		)
 		.toProperty()
 	),

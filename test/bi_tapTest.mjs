@@ -1,4 +1,4 @@
-import {append, flip, equals, identity, o, reverse} from 'semmel-ramda';
+import {append, flip, equals, identity, o, reverse} from 'ramda';
 import chai from 'chai';
 import bi_tap from "../src/bi_tap.js";
 import * as B from 'baconjs';

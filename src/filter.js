@@ -1,4 +1,4 @@
-import {curry, pair} from "semmel-ramda";
+import {curry, pair} from "ramda";
 import * as Bacon from "baconjs";
 
 // :: ((a -> Boolean) | Observable Boolean) -> Observable a -> Observable a
