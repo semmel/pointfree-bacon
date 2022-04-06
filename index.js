@@ -422,6 +422,7 @@ export let of = now;
 export let map = map_o;
 export let never = Bacon.never;
 export let prepend = concat;
+export let reduce = fold;
 export let skipEquals = skipRamdaLikeEquals;
 
 export {

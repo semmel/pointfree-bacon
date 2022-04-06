@@ -34,9 +34,8 @@ export function combineConsecutive<A, B>(combiner:(a: A) => (b: A) => B, seed: A
 export function combineConsecutive<A, B>(combiner:(a: A) => (b: A) => B, seed: A): (ma: Observable<A>) => Property<B>;
 export function combineConsecutive<A, B>(combiner:(a: A) => (b: A) => B): (seed: A) => (ma: Observable<A>) => Property<B>;
 
-export function combineWith<A, B, C, D>(f: (a: A, b: B, c: C) => D, ma: Observable<A>, mb: Observable<B>, mc: Observable<C>): Observable<D>;
-export function combineWith<A, B, C, D>(f: (a: A, b: B, c: C) => D): (ma: Observable<A>, mb: Observable<B>, mc: Observable<C>) => Observable<D>;
-export function combineWith<A, B, C, D>(f: (a: A, b: B, c: C) => D): (ma: Observable<A>) => (mb: Observable<B>) => (mc: Observable<C>) => Observable<D>;
+export function combineWith<A>(f: (...a: any) => A, ms: Observable<any>[]): Observable<A>;
+export function combineWith<A>(f: (...a: any) => A): (ms: Observable<any>[]) => Observable<A>;
 
 export function debounceAll<A>(delay: number, ma: Observable<A>): Observable<A>;
 export function debounceAll<A>(delay: number): (ma: Observable<A>) => Observable<A>;
@@ -51,6 +50,7 @@ export function doLog<A>(label: string, ma: Observable<A>): Observable<A>;
 export function doLog<A>(label: string): (ma: Observable<A>) => Observable<A>;
 
 export function error(e: any): Observable<any>;
+export function endOnError<A>(ma: Observable<A>): Observable<A>;
 
 export function filter<A>(fn: (x: A) => boolean, ma: Observable<A>): Observable<A>;
 export function filter<A>(fn: (x: A) => boolean): (ma: Observable<A>) => Observable<A>;
@@ -66,6 +66,9 @@ export function flatMap<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) 
 
 export function flatMapConcat<A, B>(fn: (x: A) => Observable<B>, ma: Observable<A>): Observable<B>;
 export function flatMapConcat<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) => Observable<B>;
+
+export function flatMapError<A, E>(fn: (e: E) => Observable<A>, ma: Observable<A>): Observable<A>;
+export function flatMapError<A, E>(fn: (e: E) => Observable<A>): (ma: Observable<A>) => Observable<A>;
 
 export function flatMapLatest<A, B>(fn: (x: A) => Observable<B>, ma: Observable<A>): Observable<B>;
 export function flatMapLatest<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) => Observable<B>;
@@ -112,6 +115,9 @@ export function makeProperty<A>(ma: EventStream<A>): Property<A>;
 export function map<A, B>(fn: (x: A) => B, ma: Observable<A>): Observable<B>;
 export function map<A, B>(fn: (x: A) => B): (ma: Observable<A>) => Observable<B>;
 
+export function mapEnd<A>(fn: () => A, ma: Observable<A>): Observable<A>;
+export function mapEnd<A>(fn: () => A): (ma: Observable<A>) => Observable<A>;
+
 export function merge<A>(ma1: Observable<A>, ma2: Observable<A>): Observable<A>;
 export function merge<A>(ma1: Observable<A>):  (ma2: Observable<A>) => Observable<A>;
 
@@ -123,6 +129,10 @@ export  function of<A>(x: A): EventStream<A>;
 
 export function or(ma: Observable<any>, mb: Observable<any>): Observable<boolean>;
 export function or(ma: Observable<any>): (mb: Observable<any>) => Observable<boolean>;
+
+export function reduce<A, B>(reducer: (acc: B, val: A) => B, seed: B, ma: Observable<A>): Observable<B>;
+export function reduce<A, B>(reducer: (acc: B, val: A) => B, seed: B): (ma: Observable<A>) => Observable<B>;
+export function reduce<A, B>(reducer: (acc: B, val: A) => B): (seed: B) => (ma: Observable<A>) => Observable<B>;
 
 export function reject<A>(fn: (x: A) => boolean, ma: Observable<A>): Observable<A>;
 export function reject<A>(fn: (x: A) => boolean): (ma: Observable<A>) => Observable<A>;

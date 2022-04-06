@@ -1,7 +1,7 @@
 import nodeResolve from '@rollup/plugin-node-resolve';
 
 const
-	externals = ["semmel-ramda", "@visisoft/staticland", "@visisoft/staticland/maybe", "baconjs"],
+	externals = ["ramda", "@visisoft/staticland", "@visisoft/staticland/maybe", "baconjs"],
 	
 	config = {
 		input: "index.js",

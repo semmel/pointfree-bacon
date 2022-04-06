@@ -4,7 +4,7 @@
 		"url": "https://github.com/semmel/pointfree-bacon/issues"
 	},
 	"dependencies": {
-		"@visisoft/staticland": "^0.1.32",
+		"@visisoft/staticland": "^0.1.37",
 		"baconjs": "^3.0.17",
 		"ramda": "^0.28.0"
 	},
@@ -40,5 +40,5 @@
 		"test": "mocha"
 	},
 	"type": "module",
-	"version": "0.2.1"
+	"version": "0.2.2"
 }
