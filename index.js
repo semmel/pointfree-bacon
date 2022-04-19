@@ -74,6 +74,7 @@ import filter from './src/filter.js';
 import reject from './src/reject.js';
 import takeWhile from './src/takeWhile.js';
 import bi_tap from './src/bi_tap.js';
+import map_o from './src/map.js';
 
 const
 	// Creators //
@@ -176,7 +177,6 @@ const
 		}),
 	endOnError = observable => observable.endOnError(),
 	first = observable => observable.first(),
-	map_o = curry((fn, observable) => observable.map(fn)),
 	// mapEnd :: (() -> a) -> Observable a -> Observable a
 	mapEnd = curry((fn, observable) => observable.mapEnd(fn)),
 	// mapError :: (e -> a) -> Observable e a -> Observable e a
@@ -204,6 +204,13 @@ const
 	not = observable => observable.not(),
 	// flatMap :: (a -> Observable b) -> Observable a -> Observable b
 	flatMap = curry((fn, observable) => observable.flatMap(fn)),
+	
+	// join :: Observable (Observable a) -> Observable a
+	join = observable => observable.flatMap(_ => _),
+	
+	// switchLatest :: Observable (Observable a) -> Observable a
+	switchLatest = observable => observable.flatMapLatest(_ => _),
+	
 	/** @deprecated see @visisoft-local/lib/observables/nothingToNeverOrJustToOnce */
 	// filterJust :: Observable Maybe a -> Observable a
 	filterJust = flatMap(maybe(Bacon.never, identity)),
@@ -425,6 +432,8 @@ export let prepend = concat;
 export let reduce = fold;
 export let skipEquals = skipRamdaLikeEquals;
 
+export { default as pluck } from './src/pluck.js';
+
 export {
 	and,
 	append,
@@ -473,6 +482,7 @@ export {
 	holdWhen,
 	isJustValue,
 	isSubsequentPrecededBy,
+	join,
 	joinP,
 	last,
 	lastToPromise,
@@ -504,6 +514,7 @@ export {
 	slidingWindow,
 	startWith,
 	swap,
+	switchLatest,
 	take,
 	takeUntil,
 	takeWhile,
