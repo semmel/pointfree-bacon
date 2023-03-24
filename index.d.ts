@@ -54,6 +54,8 @@ export function debounceImmediate<A>(dt: number): (ma: Observable<A>) => Observa
 export function delay<A>(dt: number, ma: Observable<A>): Observable<A>;
 export function delay<A>(dt: number): (ma: Observable<A>) => Observable<A>;
 
+export function doError<A>(log: (error: Error) => any): (ma: Observable<A>) => Observable<A>;
+
 export function doLog<A>(label: string, ma: Observable<A>): Observable<A>;
 export function doLog<A>(label: string): (ma: Observable<A>) => Observable<A>;
 
@@ -77,6 +79,9 @@ export function flatMapConcat<A, B>(fn: (x: A) => Observable<B>): (ma: Observabl
 
 export function flatMapError<A, E>(fn: (e: E) => Observable<A>, ma: Observable<A>): Observable<A>;
 export function flatMapError<A, E>(fn: (e: E) => Observable<A>): (ma: Observable<A>) => Observable<A>;
+
+export function flatMapFirst<A, B>(fn: (x: A) => Observable<B>, ma: Observable<A>): Observable<B>;
+export function flatMapFirst<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) => Observable<B>;
 
 export function flatMapLatest<A, B>(fn: (x: A) => Observable<B>, ma: Observable<A>): Observable<B>;
 export function flatMapLatest<A, B>(fn: (x: A) => Observable<B>): (ma: Observable<A>) => Observable<B>;
@@ -130,6 +135,8 @@ export function mapEnd<A>(fn: () => A): (ma: Observable<A>) => Observable<A>;
 
 export function merge<A>(ma1: Observable<A>, ma2: Observable<A>): Observable<A>;
 export function merge<A>(ma1: Observable<A>):  (ma2: Observable<A>) => Observable<A>;
+
+export function mergeAll<A>(mas: Observable<A>[]): Observable<A>;
 
 export function never(): EventStream<any>;
 export function not(ma: Observable<boolean>): Observable<boolean>;
@@ -186,6 +193,8 @@ export function switchLatest<A>(ma: Observable<Observable<A>>): Observable<A>;
 
 export function skipSame<A>(cmp: (left: A, right: A) => boolean, ma: Observable<A>): Observable<A>;
 export function skipSame<A>(cmp: (left: A, right: A) => boolean): (ma: Observable<A>) => Observable<A>;
+
+export function swap<A, B>(error2Value: (e: any) => B, value2Error: (a: A) => any): (ma: Observable<A>) => Observable<B>;
 
 export function take<A>(count: number, ma: Observable<A>): Observable<A>;
 export function take<A>(count: number): (ma: Observable<A>) => Observable<A>;
