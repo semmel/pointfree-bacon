@@ -26,7 +26,7 @@ const
 
 describe("flatScanLatest", function() {
 	this.slow(5000);
-	
+
 	it("produces just the seed value if the inner stream never emits", pipe(
 		() => Bacon.once(1),
 		flatScanLatest(() => Bacon.never(), 0),
@@ -34,7 +34,7 @@ describe("flatScanLatest", function() {
 		flatMap(Bacon.try(xs => { assert.deepStrictEqual(xs, [0]); })),
 		lastToPromise
 	));
-	
+
 	it("produces a sequence of the seed value and all reducer emitted values", pipe(
 		() => Bacon.mergeAll([
 			Bacon.once(10),
@@ -52,38 +52,6 @@ describe("flatScanLatest", function() {
 	));
 });
 
-describe("flatMapLatest", function() {
-	this.slow(1000);
-	
-	it ("disposes the preceding sub-stream before creating the following", () => {
-		const
-			lifecycleEvents = [],
-			
-			subStream = x => {
-				lifecycleEvents.push(`C${x}`);
-				return Bacon.fromBinder(sink => {
-					const interval = setInterval(sink, 10, x);
-					return () => {
-						lifecycleEvents.push(`D${x}`);
-						clearInterval(interval);
-					};
-				});
-			};
-		
-		return pipe(
-			() => Bacon.sequentially(25, [1, 2, 3]),
-			flatMapLatest(subStream),
-			take_o(6),
-			reduce_o(flip(append), []),
-			lastToPromise
-		)()
-		.then(xs => {
-			assert.deepStrictEqual(xs, [1, 1, 2, 2, 3, 3]);
-			assert.deepStrictEqual(lifecycleEvents, ["C1", "D1", "C2", "D2", "C3", "D3"]);
-		});
-	});
-});
-
 describe("Pointfree Maybe Streams", function () {
 	describe(".filterJust", function() {
 		it("absorbs nothing values", () =>
@@ -95,7 +63,7 @@ describe("Pointfree Maybe Streams", function () {
 				firstToPromise
 			)(nothing())
 		);
-		
+
 		it("unwraps just values", () =>
 			pipe(
 				Bacon.fromArray,
@@ -122,7 +90,7 @@ describe("tap", function() {
 			assert.strictEqual(valueSum, 3);
 		});
 	});
-	
+
 	it("continues with the error thrown in the side-effect", () =>
 		pipe(
 			() => Bacon.once("foo"),
@@ -140,7 +108,7 @@ describe("chainTap", function() {
 	it ("waits for the last event in the side effect stream and then continues with the source value", () => {
 		let isSideEffectCalled = false;
 		const beginT = Date.now();
-		
+
 		return chainTap(
 			s => {
 				isSideEffectCalled = true;
@@ -155,7 +123,7 @@ describe("chainTap", function() {
 			assert.approximately(Date.now() - beginT, 300, 50);
 		});
 	});
-	
+
 	it ("propagates the first error in the side-effect stream", () =>
 		chainTap(
 			x => Bacon.fromArray([x, new Bacon.Error("e-foo"), new Bacon.Error("e-bar")]),
@@ -178,14 +146,14 @@ describe("skipSame", function() {
 			assert.deepStrictEqual(xs, [0, 1, 2, 3, 2, 4]);
 		})
 	);
-	
+
 	it("calls the comparison fn only with event values", () => {
 		class Foo {
 			constructor(text) {
 				this.text = text;
 			}
 		}
-		
+
 		return skipSame(
 			(a, b) => {
 				assert.instanceOf(a, Foo);

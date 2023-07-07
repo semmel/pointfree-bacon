@@ -1,4 +1,4 @@
-import {EventStream, Observable, Property} from 'baconjs';
+import {Bus, EventStream, Observable, Property} from 'baconjs';
 import {StateF} from "baconjs/types/withstatemachine";
 
 export function and(ma: Observable<any>, mb: Observable<any>): Observable<boolean>;
@@ -188,6 +188,9 @@ export function slidingWindow<A>(maxCount: number, minCount: number): (ma: Obser
 export function skipDuplicates<A>(ma: Observable<A>): Observable<A>;
 export function skipIdentical<A>(ma: Observable<A>): Observable<A>;
 export function skipRamdaLikeEquals<A>(ma: Observable<A>): Observable<A>;
+
+export function startWith<A>(seed: A, ma: Observable<A>|Bus<A>): Observable<A>;
+export function startWith<A>(seed: A): (ma: Observable<A>|Bus<A>) => Observable<A>;
 
 export function switchLatest<A>(ma: Observable<Observable<A>>): Observable<A>;
 

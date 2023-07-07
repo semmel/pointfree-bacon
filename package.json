@@ -4,17 +4,17 @@
 		"url": "https://github.com/semmel/pointfree-bacon/issues"
 	},
 	"dependencies": {
-		"@visisoft/staticland": "^0.5.1",
+		"@visisoft/staticland": "^0.7.0",
 		"baconjs": "^3.0.17",
 		"ramda": "^0.28.0"
 	},
 	"description": "collection of pointfree, auto-curried, observable-last wrapper functions for Bacon.js",
 	"devDependencies": {
-		"@rollup/plugin-node-resolve": "^15.0.1",
+		"@rollup/plugin-node-resolve": "^15.0.2",
 		"@types/ramda": "^0.27.66",
-		"chai": "^4.3.6",
-		"mocha": "^10.0.0",
-		"rollup": "^3.20.2"
+		"chai": "^4.3.7",
+		"mocha": "^10.2.0",
+		"rollup": "^3.20.6"
 	},
 	"exports": {
 		".": {
@@ -43,5 +43,5 @@
 		"test": "mocha"
 	},
 	"type": "module",
-	"version": "0.2.7"
+	"version": "0.2.11"
 }

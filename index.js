@@ -75,18 +75,19 @@ import reject from './src/reject.js';
 import takeWhile from './src/takeWhile.js';
 import bi_tap from './src/bi_tap.js';
 import map_o from './src/map.js';
+import startWith from "./src/startWith.js";
 
 const
 	// Creators //
-	
+
 	fromEvent = curry((eventName, eventEmitter) => Bacon.fromEvent(eventEmitter, eventName)),
-	
+
 	// fromInterval :: Number -> a -> Observable any a
 	fromInterval = curry((interval, value) => Bacon.interval(interval, value)),
-	
+
 	// fromPromise :: Promise e a -> EventStream e a
 	fromPromise = unary(Bacon.fromPromise),
-	
+
 	/**
 	 * Is it like `now` from @most/core ?
 	 * @template T
@@ -99,20 +100,20 @@ const
 	empty = () => Bacon.once(),
 	// constant :: a -> Property any a
 	constant = value => Bacon.constant(value),
-	
+
 	// error :: e -> EventStream e any
 	error = e => Bacon.once(new Bacon.Error(e)),
-	
+
 	// :: number -> a -> EventStream a
 	later = curry((delay, value) => Bacon.later(delay, value)),
-	
+
 	makeProperty = eventStream => eventStream.toProperty(),
-	
+
 	// Combinators //
-	
+
 	// :: Observable a -> Observable b -> Property Boolean
 	isSubsequentPrecededBy = curry((subsequentEventStream, precedingEventStream) => precedingEventStream.awaiting(subsequentEventStream)),
-	
+
 	/* could be called "lift", could it not?  only if the combinator is curried??
 	* It's not equivalent to the original Bacon.combineWith because THAT accepts a variadic Property arguments. */
 	// combineWith :: ((a, b, ..., m) -> n) -> [Observable a, Observable b, ..., Observable m] -> Property n
@@ -145,14 +146,14 @@ const
 	 */
 	// append :: Observable b -> Observable a -> Observable (a|b)
 	append = curry((nextObservable, precedingObservable) => precedingObservable.concat(nextObservable)),
-	
+
 	//// Buffering ////
-	
+
 	bufferingThrottle = curry((minimumInterval, observable) => observable.bufferingThrottle(minimumInterval)),
 	// n = Integer
 	// :: n -> Observable e a -> Observable e Array n a
 	bufferWithCount = curry((count, observable) => observable.bufferWithCount(count)),
-	
+
 	changes = observable => observable.changes(),
 	createError = construct(Bacon.Error),
 	debounceImmediate = curry((delay, observable) => observable.debounceImmediate(delay)),
@@ -172,7 +173,7 @@ const
 			property
 			.takeUntil(observable)
 			.onValue(identity);
-			
+
 			return property;
 		}),
 	endOnError = observable => observable.endOnError(),
@@ -204,13 +205,13 @@ const
 	not = observable => observable.not(),
 	// flatMap :: (a -> Observable b) -> Observable a -> Observable b
 	flatMap = curry((fn, observable) => observable.flatMap(fn)),
-	
+
 	// join :: Observable (Observable a) -> Observable a
 	join = observable => observable.flatMap(_ => _),
-	
+
 	// switchLatest :: Observable (Observable a) -> Observable a
 	switchLatest = observable => observable.flatMapLatest(_ => _),
-	
+
 	/** @deprecated see @visisoft-local/lib/observables/nothingToNeverOrJustToOnce */
 	// filterJust :: Observable Maybe a -> Observable a
 	filterJust = flatMap(maybe(Bacon.never, identity)),
@@ -247,7 +248,7 @@ const
 	// flatScan should work for Properties too. It's implementation is based on flatMapConcat.
 	// flatScan :: ((b, a) -> Observable b) -> b -> EventStream a -> Property b
 	flatScan = curry((asyncReducer, seed, eventStream) => eventStream.flatScan(seed, asyncReducer)),
-	
+
 	// flatScanLatest :: ((b, a) -> Observable b) -> b -> EventStream a -> Property b
 	flatScanLatest = curry((asyncReducer, seed, observable) =>
 		Bacon.once(seed)
@@ -264,25 +265,25 @@ const
 		)
 		.toProperty()
 	),
-	
+
 	// :: Observable Boolean -> Observable a -> Observable a
 	holdWhen = curry((valve, observable) => observable.holdWhen(valve.toProperty())),
-	
+
 	last = observable => observable.last(),
-	
+
 	// onValue :: (a -> *) -> Observable a -> (() -> *)
 	onValue = curry((fn, observable) => observable.onValue(fn)),
-	
+
 	runEffects = observable => observable.onValue(identity),
 	// onJustValue :: (a -> *) -> Observable Maybe a -> (() -> *)
 	onJustValue = curry((fn, observable) => onValue(maybe(identity, fn), observable)),
 	// isJustValue :: Observable Maybe a -> Observable Boolean
 	isJustValue = map_o(maybe(F, T)),
-	
+
 	fold = curry((reducer, seed, observable) => observable.fold(seed, reducer)),
 	// scan :: ((b, a) -> b) -> b -> Observable a -> Property b
 	scan = curry((reducer, seed, observable) => observable.scan(seed, reducer)),
-	
+
 	// see https://crocks.dev/docs/crocks/Async.html#swap
 	// swap :: (e -> b) -> (a -> c) -> Observable e a -> Observable c b
 	swap = curry((errorToValue, valueToError, observable) =>
@@ -298,7 +299,7 @@ const
 			}
 		})
 	),
-	
+
 	regeneratorEndSymbol = Symbol('regeneratorEndSymbol'),
 	/**
 	 *
@@ -329,7 +330,7 @@ const
 	withLatest = curry((combinator, samplee, sampler) => sampler.withLatestFrom(samplee, flip(binary(combinator)))),
 	// withLatestAsPair :: Observable a -> Observable b -> Observable Pair a b
 	withLatestAsPair = withLatest(pair),
-	
+
 	nothingSeedValue = Symbol('nothingSeedValue'),
 	/**
 	 * Different to `.debounce` this implementation also delays initial values of properties.
@@ -358,12 +359,12 @@ const
 			if (!event.hasValue) {
 				return [acc, [event]];
 			}
-			
+
 			return (acc !== nothingSeedValue) && equals(acc, event.value)
 				? [acc, []]
 				: [event.value, [event]];
 		}),
-	
+
 	/**
 	 * This implementation differs from the original `skipDuplicates()` implementation
 	 * in that it does not consider the `isInitial` property of incoming values, but rather
@@ -374,17 +375,16 @@ const
 			if (!event.hasValue) {
 				return [acc, [event]];
 			}
-			
+
 			return (acc !== nothingSeedValue) && isEqual(acc, event.value)
 				? [acc, []]
 				: [event.value, [event]];
 		})
 	),
-	
+
 	skipRamdaLikeEquals = observable => observable.skipDuplicates(equals),
 	skipIdentical = observable => observable.skipDuplicates(),
 	slidingWindow = curry((maximumNumberOfValues, minimumNumberOfValues, observable) => observable.slidingWindow(maximumNumberOfValues, minimumNumberOfValues)),
-	startWith = curry((seed, observable) => observable.startWith(seed)),
 	// Mimics @most/core tap
 	// tap :: (a -> *) -> Stream a -> Stream a
 	tap = curry((f, observable) => observable.flatMap(tryCatch(o(now, Rtap(f)), e => new Bacon.Error(e)))),
@@ -416,13 +416,13 @@ const
 	// toProperty :: a -> EventStream a -> Property a
 	toProperty = curry((initialValue, eventStream) => eventStream.toProperty(initialValue)),
 	withStateMachine = curry((reducer, initialValue, observable) => observable.withStateMachine(initialValue, reducer)),
-	
+
 	// push :: a -> Bus a -> Bus a
 	push = curry((valueOrBaconError, bus) => {
 		bus.push(valueOrBaconError);
 		return bus;
 	});
-	
+
 export let chain = flatMap;
 export let chainRej = flatMapError;
 export let of = now;
